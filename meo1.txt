@@ -22,3 +22,22 @@ Chưa được git add
 * Create:
 mkdir new-folder
 echo "Nội dung file" > new-file.txt
+echo > new-file.txt
+
+// thêm xong:
+git add .
+hoặc
+git add new-folder/ new-file.txt
+git commit -m "Add new folder and files"
+git remote add origin "link repo.git"
+git push -u origin main
+
+* nếu làm việc trên nhiều máy , muốn cập nhật code từ phía bên kia: git pull origin main
+git pull origin main    # Kéo code mới
+git add .              # Thêm thay đổi của bạn
+git commit -m "Update"
+git push origin main   # Push lên
+
+* meo1.txt đang bị M (modified) :
+git status
+git add meo1.txt
