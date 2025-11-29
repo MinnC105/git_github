@@ -39,5 +39,8 @@ git commit -m "Update"
 git push origin main   # Push lên
 
 * meo1.txt đang bị M (modified) :
-git status
+git status (eo1.txt : red) [M]
 git add meo1.txt
+git status (eo1.txt : green) - ĐÃ THÊM VÀO STAGING [A]
+git commit -m "Update meo1.txt"
+git status
