@@ -1,0 +1,14 @@
+// prac 0 in python advanced
+cd ..
+git clone "link fork"
+cd pp2025
+git remote add origin "link fork"
+git remote -v "link fork"
+
+code . (open cả file trong fork)
+code README.md
+
+# Sau khi sửa README.md
+git add README.md
+git commit -m "Update README with my info"
+git push origin main

@@ -1,0 +1,3 @@
+// create repo git_github
+cd git_github
+git init
