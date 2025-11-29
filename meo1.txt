@@ -1,3 +1,24 @@
 // create repo git_github
 cd git_github
 git init
+git add .
+git commit -m "Initial commit for git_github folder"
+tạo repo thủ công trên github web 
+// kết nối + push
+git remote add origin https://github.com/MinnC105/git_github.git
+git branch -M main
+git push -u origin main
+
+* Visual on files:
+- U = Untracked (File mới, chưa được git theo dõi)
+- A = Added (Đã thêm vào staging)
+- D = Deleted (Đã xóa)
+- R = Renamed (Đã đổi tên)
+- M = Modified (Đã sửa đổi)
+File đã được thay đổi so với commit cuối cùng
+Chưa được git add
+? : nhưng lệnh update thay đổi là git add . trước git commit -m "lời nhắn" rồi push thì sao commit rồi mà chưa add để M ?
+
+* Create:
+mkdir new-folder
+echo "Nội dung file" > new-file.txt
