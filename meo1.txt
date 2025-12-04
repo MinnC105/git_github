@@ -45,3 +45,8 @@ git status (eo1.txt : green) - ĐÃ THÊM VÀO STAGING [A]
 git commit -m "Update meo1.txt"
 git push
 git status -> work tree clean
+
+* delete :
+del file1.txt, file2.txt
+// delete folder empty : rmdir folder_name  
+// folder not empty : rmdir /s folder_name

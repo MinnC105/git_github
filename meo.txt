@@ -2,7 +2,7 @@
 cd ..
 git clone "link fork"
 cd pp2025
-git remote add origin "link fork"
+git remote add origin "link fork"   // đăng ký để add, commit
 git remote -v "link fork"
 
 code . (open cả file trong fork)
@@ -12,3 +12,4 @@ code README.md
 git add README.md
 git commit -m "Update README with my info"
 git push origin main
+// phải thay đổi gì mới commit được
