@@ -1,0 +1,31 @@
+// prac 0 in python advanced
+cd ..
+git clone "link fork"
+cd pp2025
+git remote add origin "link fork"   // đăng ký để add, commit
+git remote -v "link fork"
+
+code . (open cả file trong fork)
+code README.md
+
+# Sau khi sửa README.md
+git add README.md
+git commit -m "Update README with my info"
+git push origin main
+// phải thay đổi gì mới commit được
+
+// Note:
+*******INIT*******
+** ...
+
+*******DELETE*******
+** bỏ riêng lẻ từng file
+git ls-files : xem git đang theo dõi file nào
+* BỎ THEO DÕI trong GIT
+git rm -r --cached <file_name> : xóa file chung
+git rm --cached <file_name>: xóa file con (cụ thể) trong các file 
++ confirm bằng : git commit -m "Remove <file_name> from Git tracking"
+** bỏ hẳn liên kết của git vào file chính 
+rm -r -fo .git
+** kiểm tra còn GIT không : git status 
+output : fatal: not a git repository (or any of the parent directories): .git -> là OK
