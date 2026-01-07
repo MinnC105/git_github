@@ -112,6 +112,7 @@ class InputSystem(System):
                 return
         print("Invalid course ID")
 
+
 class OutputSystem(System):
     def __init__ (self, students, courses, marks):
         self.students = students
@@ -186,7 +187,7 @@ class ManagementSystem:
 
         i = InputSystem(self.students, self.courses, self.marks)
         o = OutputSystem(self.students, self.courses, self.marks)
-
+    
         while True:
             print("1. Create list students")
             print("2. Create list courses")

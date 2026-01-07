@@ -1,159 +1,49 @@
+import curses
 import math
 import numpy as np
 
+
 class Student:
-    def __init__ (self, sid, name, dob):
+    def __init__(self, sid, name, dob):
         self.__sid = sid
         self.__name = name
         self.__dob = dob
 
-    def set_sid (self, sid):
-        self.__sid = sid
-    def set_name (self, name):
-        self.__name = name
-    def set_dob (self, dob):
-        self.__dob = dob
-
-    def get_sid (self):
+    def get_sid(self):
         return self.__sid
-    def get_name (self):
+    def get_name(self):
         return self.__name
-    def get_dob (self):
+    def get_dob(self):
         return self.__dob
-    
+
 
 class Course:
-    def __init__ (self, cid, name, credit):
+    def __init__(self, cid, name, credit):
         self.__cid = cid
         self.__name = name
         self.__credit = credit
 
-    def set_cid (self, cid):
-        self.__cid = cid
-    def set_name (self, name):
-        self.__name = name
-    def set_credit (self, credit):
-        self.__credit = credit
-
-    def get_cid (self):
+    def get_cid(self):
         return self.__cid
-    def get_name (self):
+    def get_name(self):
         return self.__name
-    def get_credit (self):
+    def get_credit(self):
         return self.__credit
 
 
 class Mark:
-    def __init__ (self, cid, sid, mark = 0.0):
-        self.__cid = cid
+    def __init__(self, sid, cid, mark):
         self.__sid = sid
+        self.__cid = cid
         self.__mark = mark
 
-    def set_cid (self, cid):
-        self.__cid = cid
-    def set_sid (self, sid):
-        self.__sid = sid
-    def set_mark (self, mark):
-        self.__mark = mark
-
-    def get_cid (self):
-        return self.__cid
-    def get_sid (self):
+    def get_sid(self):
         return self.__sid
-    def get_mark (self):
+    def get_cid(self):
+        return self.__cid
+    def get_mark(self):
         return self.__mark
 
-
-class System:
-    def input (self):
-        pass
-    def list (self):
-        pass
-
-
-class InputSystem(System):
-    def __init__ (self, students, courses, marks):
-        self.students = students
-        self.courses = courses
-        self.marks = marks
-
-    def input (self):
-        self.inp_s()
-        self.inp_c()
-        self.inp_m()
-
-    def inp_s (self):
-        n = int(input("Enter number of students: "))
-        for i in range(n):
-            print(f"Student {i + 1}")
-            sid = input("Student ID: ")
-            sname = input("Name: ")
-            dob = input("Date of Birth: ")
-            self.students.append(Student(sid, sname, dob))
-
-    def inp_c (self):
-        m = int(input("Enter number of course: "))
-        for i in range(m):
-            print(f"Course {i + 1}")
-            cid = input("Course ID: ")
-            cname = input("Course name: ")
-            credit = int(input("Credit: "))
-            self.courses.append(Course(cid, cname, credit))
-
-    def inp_m (self):
-        res = input("Course ID want to choose: ")
-        for c in self.courses:
-            if res == c.get_cid():
-                for s in self.students:    
-                    sid = s.get_sid()
-                    tmp = float(input(f"Enter mark for {s.get_sid()}: "))
-                    mark = math.floor(tmp * 10) / 10
-                    self.marks.append(Mark(res, sid, mark))
-                return
-        print("Invalid course ID")
-
-
-class OutputSystem(System):
-    def __init__ (self, students, courses, marks):
-        self.students = students
-        self.courses = courses
-        self.marks = marks
-
-    def list (self):
-        self.list_s()
-        self.list_c()
-        self.list_m()
-        self.list_gpa_desc()
-
-    def list_s (self):
-        print("STUDENT LIST (with GPA)")
-        for s in self.students:
-            gpa = cal_gpa(s, self.courses, self.marks)
-            print(f"{s.get_sid()}|{s.get_name()}|{s.get_dob()}|GPA: {round(gpa, 2)}")
-
-    def list_c (self):
-        print("COURSE LIST")
-        for c in self.courses:
-            print(f"{c.get_cid()}|{c.get_name()}")
-
-    def list_m (self):
-        res = input("Course ID want to choose: ")
-        for m in self.marks:
-            if m.get_cid() == res:
-                for s in self.students:
-                    if s.get_sid() == m.get_sid():
-                        print(f"{s.get_name()}: {m.get_mark()}")
-
-    def list_gpa_desc (self):
-        print("STUDENT SORTED BY GPA")
-        data = []
-        for s in self.students:
-            gpa = cal_gpa(s, self.courses, self.marks)
-            data.append((s, gpa))
-        # data.sort(key = lambda x: x[1]) # defaut asc
-        data.sort(key = lambda x: x[1], reverse = True)
-        for s, gpa in data:
-            print(f"{s.get_sid()}|{s.get_name()}|GPA: {round(gpa, 2)}")
 
 
 def cal_gpa (student, courses, marks):
@@ -179,64 +69,184 @@ def cal_gpa (student, courses, marks):
     return np.sum(scores * credits) / np.sum(credits)
 
 
-class ManagementSystem:
-    def __init__ (self):
+"""
+    # stdscr.addstr() → hiển thị prompt
+    # stdscr.getch()
+    # stdscr.getstr()
+    # stdscr.clear()
+    # getstr → nhập chuỗi
+    # echo/noecho → bật/tắt hiện ký tự
+"""
+class CursesUI:
+    def __init__(self, stdscr):
+        self.stdscr = stdscr
+        self.current = 0    # vị trí menu đang chọn
+
         self.students = []
         self.courses = []
         self.marks = []
 
-        i = InputSystem(self.students, self.courses, self.marks)
-        o = OutputSystem(self.students, self.courses, self.marks)
+        self.menu = [
+            "Add students",
+            "Add courses",
+            "Add marks",
+            "Show students + GPA",
+            "Show courses",
+            "Exit"
+        ]
+
+    def input_str(self, y, x, prompt):
+        curses.echo()
+        self.stdscr.addstr(y, x, prompt)   
+        self.stdscr.refresh()
+        # refresh() : addstr() ghi promt vào buffer, refresh() đẩy buffer ra màn 
+        s = self.stdscr.getstr(y, x + len(prompt), 30).decode()
+        # 30 : max ký tự được nhập 
+        # decode() : getstr() trong curses trả về bytes , decode() để chuyển về 
+        curses.noecho()
+        return s
+
+    def input_int(self, y, x, prompt):
+        while True:
+            try:
+                return int(self.input_str(y, x, prompt))
+            except ValueError:
+                self.stdscr.addstr(y + 1, x, "Invalid number!")
+
+    def input_float(self, y, x, prompt):
+        while True:
+            try:
+                return float(self.input_str(y, x, prompt))
+            except ValueError:
+                self.stdscr.addstr(y + 1, x, "Invalid number!")
+
+    # INPUT IMPLEMENT 
+    def input_students(self):
+        self.stdscr.clear()    
+        # clear() : xóa màn hình hiển thị trước 
+        n = self.input_int(2, 2, "Number of students: ")
+        for i in range(n):
+            self.stdscr.clear()
+            self.stdscr.addstr(1, 2, f"Student {i+1}")
+            sid = self.input_str(3, 2, "ID: ")
+            name = self.input_str(4, 2, "Name: ")
+            dob = self.input_str(5, 2, "DOB: ")
+            self.students.append(Student(sid, name, dob))
+        self.stdscr.getch()
+        # getch() : = “Press any key to continue”
+
+    def input_courses(self):
+        self.stdscr.clear()
+        n = self.input_int(2, 2, "Number of courses: ")
+        for i in range(n):
+            self.stdscr.clear()
+            self.stdscr.addstr(1, 2, f"Course {i+1}")
+            cid = self.input_str(3, 2, "Course ID: ")
+            name = self.input_str(4, 2, "Name: ")
+            credit = self.input_int(5, 2, "Credit: ")
+            self.courses.append(Course(cid, name, credit))
+        self.stdscr.getch()
+
+    def input_marks(self):
+        self.stdscr.clear()
+        cid = self.input_str(2, 2, "Course ID: ")
+        check = False 
+        for c in self.courses:
+            if c.get_cid() == cid:
+                for s in self.students:
+                    mark = self.input_float(4, 2, f"Mark for {s.get_sid()}: ")
+                    mark = math.floor(mark * 10) / 10
+                    self.marks.append(Mark(s.get_sid(), cid, mark))
+                check = True 
+                break 
+        if not check:
+            self.stdscr.addstr(6, 2, "Course not exist!")
+        # print ra "Course not exist !
+        self.stdscr.getch()
+
+    def show_students(self):
+        self.stdscr.clear()
+        
+        data = [] 
+        for s in self.students:
+            gpa = cal_gpa(s, self.courses, self.marks)
+            data.append((s, gpa)) 
+        data.sort(key = lambda x: x[1], reverse = True)
+
+        y = 2 
+        for s, gpa in data:
+            self.stdscr.addstr(y, 2, f"{s.get_sid()} | {s.get_name()} | GPA: {gpa:.2f}")
+            y += 1
+        self.stdscr.getch()
+
+    def show_courses(self):
+        self.stdscr.clear()
+        y = 2
+        for c in self.courses:
+            self.stdscr.addstr(y, 2, f"{c.get_cid()} | {c.get_name()} | {c.get_credit()}")
+            y += 1
+        self.stdscr.getch()
+
+    #   MENU 
+    def draw_menu(self):
+        self.stdscr.clear()
+        self.stdscr.addstr(0, 2, "STUDENT MANAGEMENT (CURSES)", curses.A_BOLD)
+        for i, item in enumerate(self.menu):
+            if i == self.current:
+                self.stdscr.addstr(i + 2, 4, item, curses.A_REVERSE)
+                # curses.A_REVERSE    # chữ trắng, nền đen và ngược 
+                # curses.A_BOLD       # in đậm
+                # curses.A_UNDERLINE  # gạch chân
+                # curses.color_pair() # màu tùy chỉnh
+            else:
+                self.stdscr.addstr(i + 2, 4, item)
+        self.stdscr.refresh()
+
+    def run(self):
+        curses.curs_set(0)          # tắt/ bật hiện chuột 
+        self.stdscr.keypad(True)    
+        # hàm sẵn cho phép sử dụng mũi tên bàn phím , getch() không in ra giá trị rác
 
         while True:
-            print("1. Create list students")
-            print("2. Create list courses")
-            print("3. Add students")
-            print("4. Add courses")
-            print("5. Add marks")
-            print("6. List students + GPA")
-            print("7. List courses")
-            print("8. List students + GPA (DESC)")
-            print("0. Exit")
+            self.draw_menu()
+            key = self.stdscr.getch()
 
-            choice = input("Choose: ")
+            if key == curses.KEY_UP and self.current > 0:
+                self.current -= 1
+            elif key == curses.KEY_DOWN and self.current < len(self.menu) - 1:
+                self.current += 1
+            elif key in (10, 13):
+                if self.current == 0:
+                    self.input_students()
+                elif self.current == 1:
+                    self.input_courses()
+                elif self.current == 2:
+                    self.input_marks()
+                elif self.current == 3:
+                    self.show_students()
+                elif self.current == 4:
+                    self.show_courses()
+                elif self.current == 5:
+                    break
 
-            if choice == "1":
-                self.students.clear()
-                self.marks.clear()
-                i.inp_s()
 
-            elif choice == "2":
-                self.courses.clear()
-                self.marks.clear()
-                i.inp_c()
+def main(stdscr):
+    ui = CursesUI(stdscr)
+    ui.run()
 
-            elif choice == "3":
-                i.inp_s()
+curses.wrapper(main)
+# wrapper 
 
-            elif choice == "4":
-                i.inp_c()
 
-            elif choice == "5":
-                i.inp_m()
-
-            elif choice == "6":
-                o.list_s()
-
-            elif choice == "7":
-                o.list_c()
-
-            elif choice == "8":
-                o.list_gpa_desc()
-
-            elif choice == "9":
-                o.list_m()
-
-            elif choice == "0":
-                print("Exit program.")
-                break
-
-            else:
-                print("Invalid choice!")
-
-m = ManagementSystem()
+"""
+CLI                 UI curses
+print               stdscr.addstr
+input               stdscr.getch
+while True          vòng lặp UI
+menu số             menu highlight
+"""
+        
+# curse không dùng print, input:
+# stdscr.addstr()
+# stdscr.getch()
+# stdscr.getstr()
