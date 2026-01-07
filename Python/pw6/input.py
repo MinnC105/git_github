@@ -12,6 +12,23 @@ class InputSystem:
         self.courses = courses
         self.marks = marks 
 
+
+    def save_students(self):
+        with open("students.txt", "w", encoding="utf-8") as f:
+            for s in self.students:
+                f.write(f"{s.get_sid()} | {s.get_name()} | {s.get_dob()}\n")
+    
+    def save_courses(self):
+        with open("courses.txt", "w", encoding="utf-8") as f:
+            for c in self.courses:
+                f.write(f"{c.get_cid()} | {c.get_name()} | {c.get_credit()}\n")
+
+    def save_marks(self):
+        with open("marks.txt", "w", encoding="utf-8") as f:
+            for m in self.marks:
+                f.write(f"{m.get_sid()} | {m.get_cid()} | {m.get_mark()}\n")
+
+
     def input_str(self, y, x, prompt):
         curses.echo()
         self.stdscr.addstr(y, x, prompt)   
@@ -45,6 +62,7 @@ class InputSystem:
             dob = self.input_str(5, 2, "DOB: ")
             self.students.append(Student(sid, name, dob))
         
+        self.save_students()
         self.stdscr.getch()
 
     def input_courses(self):
@@ -57,7 +75,8 @@ class InputSystem:
             name = self.input_str(4, 2, "Name: ")
             credit = self.input_int(5, 2, "Credit: ")
             self.courses.append(Course(cid, name, credit))
-
+        
+        self.save_courses()
         self.stdscr.getch()
 
     def input_marks(self):
@@ -71,8 +90,9 @@ class InputSystem:
                     mark = math.floor(mark * 10) / 10
                     self.marks.append(Mark(s.get_sid(), cid, mark))
                 check = True 
+                
+                self.save_marks()
                 break 
         if not check:
             self.stdscr.addstr(6, 2, "Course not exist!")
         self.stdscr.getch()
-

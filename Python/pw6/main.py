@@ -2,14 +2,18 @@ import curses
 from input import InputSystem 
 from output import show_students, show_courses 
 
+from storage import decompress_data, load_students, load_courses, load_marks
+from storage import compress_data
+
+
 class CursesUI:
-    def __init__(self, stdscr):
+    def __init__(self, stdscr, students, courses, marks):
         self.stdscr = stdscr
         self.current = 0   
 
-        self.students = []
-        self.courses = []
-        self.marks = []
+        self.students = students
+        self.courses = courses
+        self.marks = marks
 
         self.inputSystem = InputSystem(
             self.stdscr, self.students, self.courses, self.marks
@@ -56,12 +60,20 @@ class CursesUI:
                 elif self.current == 3:
                     show_students(self.stdscr, self.students, self.courses, self.marks)
                 elif self.current == 4:
-                    self.show_courses(self.stdscr, self.courses)
+                    show_courses(self.stdscr, self.courses)
                 elif self.current == 5:
+                    compress_data()
                     break
 
 def main(stdscr):
-    ui = CursesUI(stdscr)
+    students, courses, marks = [], [], []
+
+    if decompress_data():
+        students = load_students()
+        courses = load_courses()
+        marks = load_marks()
+
+    ui = CursesUI(stdscr, students, courses, marks)
     ui.run()
 
 curses.wrapper(main)

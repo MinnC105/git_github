@@ -1,0 +1,6 @@
+* student.txt : 
+ID | Name | Date 
+* course.txt
+ID | name | credits
+* mark.txt
+ID_course | ID_student | marks
